@@ -1,0 +1,63 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+    }
+}
+apply plugin: 'com.android.application'
+
+Properties props = new Properties()
+try {
+    props.load(file('twitter.properties').newDataInputStream())
+} catch (Exception ex) {
+    throw new FileNotFoundException("Missing twitter.properties.");
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+
+    defaultConfig {
+        applicationId "com.twitter.gino"
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionCode 1
+        versionName "0.0.3"
+    }
+    buildTypes {
+        debug {
+            buildConfigField "String", "CONSUMER_KEY", "\"${props.getProperty("twitterConsumerKey")}\""
+            buildConfigField "String", "CONSUMER_SECRET", "\"${props.getProperty("twitterConsumerSecret")}\""
+        }
+        release {
+            buildConfigField "String", "CONSUMER_KEY", "\"${props.getProperty("twitterConsumerKey")}\""
+            buildConfigField "String", "CONSUMER_SECRET", "\"${props.getProperty("twitterConsumerSecret")}\""
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url "http://dl.bintray.com/journeyapps/maven"
+    }
+    jcenter()
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'com.journeyapps:zxing-android-embedded:3.5.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'   // Version 23+ is required
+
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.twitter.sdk.android:twitter:3.1.1'
+    compile 'com.twitter.sdk.android:twitter-core:3.1.1'
+    compile 'com.twitter.sdk.android:tweet-ui:3.1.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+}

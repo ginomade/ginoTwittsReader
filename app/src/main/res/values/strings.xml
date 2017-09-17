@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Gino Twits client</string>
+    <string name="hashtag" translatable="false">#android</string>
+
+    <!-- Main Activity -->
+    <string name="menu_sign_out">Sign out</string>
+    <string name="toast_sign_out">User signed out successfully.</string>
+    <string name="loading">Loading…</string>
+    <string name="search">Search</string>
+
+</resources>
