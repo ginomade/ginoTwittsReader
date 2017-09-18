@@ -15,20 +15,12 @@
  */
 package com.twitter.gino.twits;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -40,22 +32,10 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
-import com.twitter.sdk.android.core.models.MediaEntity;
-import com.twitter.sdk.android.core.models.Tweet;
-import com.twitter.sdk.android.core.models.TweetBuilder;
-import com.twitter.sdk.android.tweetui.CompactTweetView;
-import com.twitter.sdk.android.tweetui.SearchTimeline;
-import com.twitter.sdk.android.tweetui.Timeline;
-import com.twitter.sdk.android.tweetui.TweetLinkClickListener;
-import com.twitter.sdk.android.tweetui.TweetMediaClickListener;
-import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
     private TwitterLoginButton loginButton;
-    private String SEARCH_QUERY;
-
-    EditText vSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +43,14 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        SEARCH_QUERY = "android";
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.container, new MainFragment())
+                    .commit();
+        }
 
         setUpLoginButton();
-        setUpTimeline(SEARCH_QUERY);
-        setupSearch();
     }
 
     private void setUpLoginButton() {
@@ -85,43 +68,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void setupSearch() {
-        vSearch = (EditText) findViewById(R.id.editTextSearch);
-        vSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                setUpTimeline(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-    }
-
-    private void setUpTimeline(String searchString) {
-        SearchTimeline searchTimeline = new SearchTimeline.Builder().query(searchString).build();
-
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_timeline);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        /*final CustomAdapter adapter = (CustomAdapter) new CustomAdapter.Builder(this)
-                        .setTimeline(searchTimeline)
-                        .setViewStyle(R.style.tw__TweetLightWithActionsStyle)
-                        .build();*/
-
-        final CustomAdapter adapter = new CustomAdapter(this, searchTimeline);
-
-        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -179,26 +125,4 @@ public class MainActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    class CustomAdapter extends TweetTimelineRecyclerViewAdapter {
-
-        public CustomAdapter(Context context, Timeline<Tweet> timeline) {
-            super(context, timeline);
-        }
-
-        public CustomAdapter(Context context, Timeline<Tweet> timeline, int styleResId, Callback<Tweet> cb) {
-            super(context, timeline, styleResId, cb);
-        }
-
-        @Override
-        public void onBindViewHolder(TweetViewHolder holder, int position) {
-            super.onBindViewHolder(holder, position);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(context, "click on twitt.", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-    }
 }
