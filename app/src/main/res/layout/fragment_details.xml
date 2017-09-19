@@ -1,14 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id='@+id/my_tweet_layout'
+    <RelativeLayout
+        android:id='@+id/my_tweet_header'
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"/>
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:background="@color/tw__blue_default">
+
+        <ImageView
+            android:id='@+id/my_tweet_avatar'
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id='@+id/my_tweet_user'
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/tw__composer_black"
+            android:textSize="24sp" />
+
+
+        <TextView
+            android:id='@+id/my_tweet_text'
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="100dp" />
+
+        <ImageView
+            android:id='@+id/my_tweet_image'
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/my_tweet_text"
+            android:layout_marginTop="10dp" />
+
+    </RelativeLayout>
+
+
+
+
+
+</RelativeLayout>

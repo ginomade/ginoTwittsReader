@@ -3,24 +3,26 @@ package com.twitter.gino.twits;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.twitter.gino.R;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.TweetUtils;
-import com.twitter.sdk.android.tweetui.TweetView;
 
 public class DetailsFragment extends Fragment {
 
     public static DetailsFragment newInstance() {
         Bundle args = new Bundle();
-        //args.putInt(ARG_KITTEN_NUMBER, kittenNumber);
 
         DetailsFragment fragment = new DetailsFragment();
         fragment.setArguments(args);
@@ -40,23 +42,32 @@ public class DetailsFragment extends Fragment {
 
         Bundle args = getArguments();
 
-        final LinearLayout myLayout
-                = (LinearLayout) view.findViewById(R.id.my_tweet_layout);
+        final ImageView vAvatar = (ImageView) view.findViewById(R.id.my_tweet_avatar);
+        final ImageView vTweetImage = (ImageView) view.findViewById(R.id.my_tweet_image);
+        final TextView vTweetUser = (TextView) view.findViewById(R.id.my_tweet_user);
+        final TextView vTweetText = (TextView) view.findViewById(R.id.my_tweet_text);
+        final RelativeLayout vHeader = (RelativeLayout) view.findViewById(R.id.my_tweet_header);
 
-        final long tweetId = args.getLong(MainFragment.TWEET_ID);//510908133917487104L;
+        final long tweetId = args.getLong(MainFragment.TWEET_ID);
 
-        myLayout.setTransitionName(String.valueOf(tweetId));
+        vHeader.setTransitionName(String.valueOf(tweetId));
 
         TweetUtils.loadTweet(tweetId, new Callback<Tweet>() {
             @Override
             public void success(Result<Tweet> result) {
                 final Tweet tweet = result.data;
-                myLayout.addView(new TweetView(getContext(), tweet));
+
+                Picasso.with(getContext()).load(tweet.user.profileImageUrl).into(vAvatar);
+                if (!tweet.entities.media.isEmpty()) {
+                    Picasso.with(getContext()).load(tweet.entities.media.get(0).mediaUrl).into(vTweetImage);
+                }
+                vTweetUser.setText(tweet.user.name);
+                vTweetText.setText(tweet.text);
             }
 
             @Override
             public void failure(TwitterException exception) {
-                // Toast.makeText(...).show();
+                Log.e("DetailsFragment", "error loading tweet details.");
             }
         });
 

@@ -1,7 +1,6 @@
 package com.twitter.gino.twits;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,22 +12,13 @@ import android.text.TextWatcher;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.twitter.gino.R;
 import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
-import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 import com.twitter.sdk.android.core.models.MediaEntity;
 import com.twitter.sdk.android.core.models.Tweet;
@@ -44,7 +34,7 @@ import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
  * Created by Gino on 17/09/2017.
  */
 
-public class MainFragment extends Fragment{
+public class MainFragment extends Fragment {
 
     private TwitterLoginButton loginButton;
     private String SEARCH_QUERY;
@@ -133,39 +123,40 @@ public class MainFragment extends Fragment{
             compactTweetView.setTweetMediaClickListener(new TweetMediaClickListener() {
                 @Override
                 public void onMediaEntityClick(Tweet tweet, MediaEntity entity) {
-                    Log.d("TweetMediaClicked", "tweet = " + tweet.text );
+                    Log.d("TweetMediaClicked", "tweet = " + tweet.text);
                 }
             });
 
             compactTweetView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    DetailsFragment detailsFragment = DetailsFragment.newInstance();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        detailsFragment.setSharedElementEnterTransition(new DetailsTransition());
-                        detailsFragment.setEnterTransition(new Fade());
-                        detailsFragment.setExitTransition(new Fade());
-                        detailsFragment.setSharedElementReturnTransition(new DetailsTransition());
-                    }
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        DetailsFragment detailsFragment = DetailsFragment.newInstance();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            detailsFragment.setSharedElementEnterTransition(new DetailsTransition());
+                            detailsFragment.setEnterTransition(new Fade());
+                            detailsFragment.setExitTransition(new Fade());
+                            detailsFragment.setSharedElementReturnTransition(new DetailsTransition());
+                        }
 
-                    Bundle bundle = new Bundle();
-                    bundle.putLong(TWEET_ID, compactTweetView.getTweetId());
-                    detailsFragment.setArguments(bundle);
-                    compactTweetView.getChildAt(0).setTransitionName(String.valueOf(compactTweetView.getTweetId()));
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .addSharedElement(compactTweetView.getChildAt(0), String.valueOf(compactTweetView.getTweetId()))
-                            .replace(R.id.container, detailsFragment)
-                            .addToBackStack(null)
-                            .commit();
+                        Bundle bundle = new Bundle();
+                        bundle.putLong(TWEET_ID, compactTweetView.getTweetId());
+                        detailsFragment.setArguments(bundle);
+                        compactTweetView.getChildAt(1).setTransitionName(String.valueOf(compactTweetView.getTweetId()));
+
+                        getActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .addSharedElement(compactTweetView.getChildAt(1), String.valueOf(compactTweetView.getTweetId()))
+                                .replace(R.id.container, detailsFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
                     return true;
                 }
             });
 
-
             return new TweetViewHolder(compactTweetView);
         }
-
 
     }
 }
