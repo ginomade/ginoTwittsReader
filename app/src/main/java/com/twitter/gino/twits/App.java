@@ -16,6 +16,7 @@
 package com.twitter.gino.twits;
 
 import android.app.Application;
+import android.support.multidex.MultiDex;
 
 import com.twitter.gino.BuildConfig;
 import com.twitter.sdk.android.core.Twitter;
@@ -31,6 +32,7 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
+        MultiDex.install(this);
         super.onCreate();
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         TwitterConfig config = new TwitterConfig.Builder(this).twitterAuthConfig(authConfig).build();
